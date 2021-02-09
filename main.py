@@ -2,6 +2,7 @@ from datetime import datetime as dt
 import speedtest
 import pandas as pd
 import time as tm
+import os
 
 class SP_TEST():
 
@@ -9,8 +10,12 @@ class SP_TEST():
         self.counter=0
         self.results_dict_usa=pd.DataFrame(columns=["Date","Sample","Download","Upload","Ping","Server"])
         self.results_dict_rf=pd.DataFrame(columns=["Date","Sample","Download","Upload","Ping","Server"])
-        self.path_usa=r"RESULTS\RESULTS_usa.csv"
-        self.path_rf=r"RESULTS\RESULTS_2nd.csv"
+        if os.name == 'nt':
+            self.path_usa=r"RESULTS\RESULTS_NL.csv"
+            self.path_rf=r"RESULTS\RESULTS_COL.csv"
+        else:
+            self.path_usa=r"RESULTS/RESULTS_NL.csv"
+            self.path_rf=r"RESULTS/RESULTS_COL.csv"
         actual_time=tm.time()+10000
         threshold_time=200
         while True:
@@ -34,13 +39,12 @@ class SP_TEST():
     def run_test(self):
 
         self.test_rf=speedtest.Speedtest()
-        self.test_rf.get_servers(servers=[14751])
+        self.test_rf.get_servers(servers=[15019])
         self.test_rf.download()
         self.test_rf.upload()
         self.data_rf=self.test_rf.results.dict()
-
         self.test_usa=speedtest.Speedtest()
-        self.test_usa.get_servers(servers=[22361])
+        self.test_usa.get_servers(servers=[12872])
         self.test_usa.download()
         self.test_usa.upload()
         self.data_usa=self.test_usa.results.dict()
@@ -65,14 +69,14 @@ class SP_TEST():
         try:
             self.results_dict_usa.to_csv(self.path_usa,index=False)
             self.results_dict_rf.to_csv(self.path_rf, index=False)
-            print("-------------------------------------USA--------------------------------------")
+            print("-------------------------------------NL - WILLEMSTAD--------------------------------------")
             print(self.results_dict_usa)
-            print("-------------------------------------2ND----------------------------------------")
+            print("-------------------------------------COL - BARRANQUILLA----------------------------------------")
             print(self.results_dict_rf)
         except:
             print("ERROR: Could not export csv")
-            self.results_dict_usa.to_csv("BACKUP_usa.csv", index=False)
-            self.results_dict_rf.to_csv("BACKUP_2nd.csv", index=False)
+            self.results_dict_usa.to_csv("BACKUP_NL.csv", index=False)
+            self.results_dict_rf.to_csv("BACKUP_COL.csv", index=False)
 
 
 
